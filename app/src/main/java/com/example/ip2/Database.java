@@ -1,55 +1,91 @@
 package com.example.ip2;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
+import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
+import java.util.Objects;
 
 public class Database {
-    private final HashMap<Integer, Order> database;
-    private int nextId;
     public Database(){
-        nextId = 0;
-        database = new HashMap<>();
+
     }
 
     public ArrayList<Integer> initialize(String[] arr) {
-        ArrayList<Integer> arrayId = new ArrayList<>();
+        ArrayList<Integer> arrId = new ArrayList<>();
         for(int i = 0; i < arr.length; ++i) {
-            arrayId.add(nextId);
-            database.put(nextId, new Order(nextId, arr[i], Calendar.getInstance(),i + 1));
-            ++nextId;
+            arrId.add(put(new Order(0, arr[i], Calendar.getInstance(), i + 1)));
         }
-        return arrayId;
+        return arrId;
     }
+
     public Order get(Integer id) {
-        return database.get(id);
+        boolean isFound = false;
+        SQLDatabase sql = MainActivity.sqlbase;
+        SQLiteDatabase db = sql.getWritableDatabase();
+        Cursor c = db.query(SQLDatabase.table, null, null, null, null, null, null, null);
+        if(c.moveToFirst()) {
+            int idColIndex = c.getColumnIndex(SQLDatabase.id);
+            int nameColIndex = c.getColumnIndex(SQLDatabase.name);
+            int dateColIndex = c.getColumnIndex(SQLDatabase.date);
+            int costColIndex = c.getColumnIndex(SQLDatabase.cost);
+            do {
+                if(c.getInt(idColIndex) == id) {
+                    isFound = true;
+                    break;
+                }
+            } while(c.moveToNext());
+            if(isFound) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(Objects.requireNonNull(ProductEditorActivity.dateFormat.parse(c.getString(dateColIndex), new ParsePosition(0))));
+                return new Order(
+                        c.getInt(idColIndex),
+                        c.getString(nameColIndex),
+                        cal,
+                        c.getInt(costColIndex)
+                );
+            }
+        }
+        return null;
     }
 
     public Integer put(Order p) {
-        if(p == null) {
-            throw new NullPointerException("Элемент не может быть null");
-        }
-        database.put(nextId, new Order(nextId, p.name, p.date, p.cost));
-        nextId++;
-        return nextId - 1;
+        SQLDatabase sql = MainActivity.sqlbase;
+        SQLiteDatabase db = sql.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(SQLDatabase.name, p.name);
+        String date = ProductEditorActivity.dateFormat.format(p.date.getTime());
+        cv.put(SQLDatabase.date, date);
+        cv.put(SQLDatabase.cost, p.cost);
+        int id = (int) db.insert(SQLDatabase.table, null, cv);
+        Log.d("SQL", "Putted");
+        return id;
     }
 
     public void change(Integer id, Order p) {
-        if(!database.containsKey(id)) {
-            throw new ArrayStoreException("Данный элемент не присутствует в базе");
-        }
         if(p == null) {
             throw new NullPointerException("Элемент не может быть null");
         }
-        database.remove(id);
-        database.put(id, new Order(id, p.name, p.date, p.cost));
+        SQLiteDatabase db = MainActivity.sqlbase.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(SQLDatabase.name, p.name);
+        String date = ProductEditorActivity.dateFormat.format(p.date.getTime());
+        cv.put(SQLDatabase.date, date);
+        cv.put(SQLDatabase.cost, p.cost);
+        db.update(SQLDatabase.table, cv, SQLDatabase.id + " = " + id, null);
     }
 
     public void remove(Integer id) {
-        if(database.containsKey(id)) {
-            database.remove(id);
-        } else {
-            throw new ArrayStoreException("Данный элемент не присутствует в базе");
-        }
+        SQLiteDatabase db = MainActivity.sqlbase.getWritableDatabase();
+        db.delete(SQLDatabase.table, SQLDatabase.id + " = " + id, null);
+    }
+
+    public static void deleteSqlTable() {
+        SQLiteDatabase db = MainActivity.sqlbase.getWritableDatabase();
+        db.delete(SQLDatabase.table, null, null);
     }
 }

@@ -44,6 +44,7 @@ public class ListViewFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         String[] str = getResources().getStringArray(R.array.product_list);
         if(!viewInit) {
+
             orderId = database.initialize(str);
             orderName.addAll(Arrays.asList(str));
             viewInit = true;

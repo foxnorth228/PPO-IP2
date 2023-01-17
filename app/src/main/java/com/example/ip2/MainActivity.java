@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity implements OnFragmentSendDataListener {
     static final String ACCESS_MESSAGE="ACCESS_MESSAGE";
+    public static SQLDatabase sqlbase;
     ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if(result.getResultCode() == Activity.RESULT_OK){
@@ -52,6 +53,9 @@ public class MainActivity extends AppCompatActivity implements OnFragmentSendDat
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        sqlbase = new SQLDatabase(getApplicationContext());
+        Database.deleteSqlTable();
+        sqlbase = new SQLDatabase(getApplicationContext());
     }
 
     @Override
@@ -59,6 +63,11 @@ public class MainActivity extends AppCompatActivity implements OnFragmentSendDat
         super.onResume();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        sqlbase.close();
+    }
     @Override
     public void onSendData(String s, Order product) {
         ProductEditorFragment fragment = (ProductEditorFragment) getSupportFragmentManager()
