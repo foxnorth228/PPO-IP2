@@ -18,7 +18,6 @@ import java.util.GregorianCalendar;
 
 public class MainActivity extends AppCompatActivity implements OnFragmentSendDataListener {
     private String selectedItem;
-    boolean isGetActivityResult = true;
     static final String ACCESS_MESSAGE="ACCESS_MESSAGE";
     ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -31,7 +30,9 @@ public class MainActivity extends AppCompatActivity implements OnFragmentSendDat
                             ListViewFragment fragment = (ListViewFragment) getSupportFragmentManager()
                                     .findFragmentById(R.id.fragment_container_view);
                             if (fragment != null) {
-                                fragment.deleteElement(selectedItem);
+                                Bundle extras = intent.getExtras();
+                                Order p = (Order) extras.getSerializable(ProductEditorActivity.SELECTED_ITEM);
+                                fragment.deleteElement(p.id);
                             }
                             selectedItem = "";
                             break;
@@ -50,9 +51,8 @@ public class MainActivity extends AppCompatActivity implements OnFragmentSendDat
                                     .findFragmentById(R.id.fragment_container_view);
                             if (fragment2 != null) {
                                 Bundle extras = intent.getExtras();
-                                String oldName = intent.getStringExtra(ProductEditorActivity.CHANGE_NAME);
                                 Order p = (Order) extras.getSerializable(ProductEditorActivity.SELECTED_ITEM);
-                                fragment2.changeElement(oldName, p);
+                                fragment2.changeElement(p.id, p);
                             }
                             selectedItem = "";
                             break;
@@ -84,30 +84,6 @@ public class MainActivity extends AppCompatActivity implements OnFragmentSendDat
             intent.putExtra(ProductEditorActivity.SELECTED_ITEM, product);
             mStartForResult.launch(intent);
         }
-    }
-
-    public void createElement(int src, String name, Integer count, String url) {
-        ListViewFragment fragment1 = (ListViewFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.fragment_container_view);
-        assert fragment1 != null;
-        fragment1.addElement(new Order(0, name, new GregorianCalendar(), count));
-        selectedItem = "";
-    }
-
-    public void changeElement(int src, String oldName, String name, Integer count, String url) {
-        ListViewFragment fragment2 = (ListViewFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.fragment_container_view);
-        assert fragment2 != null;
-        fragment2.changeElement(oldName, new Order(0, name, new GregorianCalendar(), count));
-        selectedItem = "";
-    }
-
-    public void deleteElement() {
-        ListViewFragment fragment = (ListViewFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.fragment_container_view);
-        assert fragment != null;
-        fragment.deleteElement(selectedItem);
-        selectedItem = "";
     }
 
     public void createElementActivity(String name) {

@@ -1,7 +1,6 @@
 package com.example.ip2;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -19,11 +18,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
-
 public class ListViewFragment extends Fragment {
     private static boolean viewInit = false;
     private static final Database database = new Database();
-    private static final ArrayList<String> productsName = new ArrayList<>();
+    private static final ArrayList<String> orderName = new ArrayList<>();
+    private static ArrayList<Integer> orderId;
     private ArrayAdapter<String> adapter;
     private OnFragmentSendDataListener fragmentSendDataListener;
 
@@ -46,14 +45,14 @@ public class ListViewFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         String[] str = getResources().getStringArray(R.array.product_list);
         if(!viewInit) {
-            database.initialize(str);
-            productsName.addAll(Arrays.asList(str));
+            orderId = database.initialize(str);
+            orderName.addAll(Arrays.asList(str));
             viewInit = true;
         }
         ListView listView = view.findViewById(R.id.listView);
         EditText editText = view.findViewById(R.id.editText);
 
-        adapter = new ArrayAdapter<>(getActivity(), R.layout.list_item, productsName);
+        adapter = new ArrayAdapter<>(getActivity(), R.layout.list_item, orderName);
         listView.setAdapter(adapter);
         editText.setOnKeyListener((v, keyCode, event) -> {
             if(event.getAction() == KeyEvent.ACTION_DOWN)
@@ -75,37 +74,31 @@ public class ListViewFragment extends Fragment {
         listView.setOnItemClickListener((parent, item, pos, id) -> {
             MainActivity main = (MainActivity) getActivity();
             assert main != null;
-            fragmentSendDataListener.onSendData(productsName.get(pos), database.get(productsName.get(pos)));
+            fragmentSendDataListener.onSendData(orderName.get(pos), database.get(orderId.get(pos)));
         });
     }
 
     public void addElement(Order p) {
-        if(productsName.contains(p.name)) {
-            return;
-        }
-        productsName.add(p.name);
-        database.put(p);
+        orderName.add(p.name);
+        orderId.add(database.put(p));
         adapter.notifyDataSetChanged();
     }
 
-    public void changeElement(String name, Order p) {
-        if(!productsName.contains(name)) {
-            return;
-        }
-        if(!Objects.equals(name, p.name) && productsName.contains(p.name)) {
-            return;
-        }
-        productsName.remove(name);
-        productsName.add(p.name);
-        database.change(name, p);
+    public void changeElement(Integer id, Order p) {
+        String name = orderName.get(orderId.indexOf(id));
+        orderName.remove(name);
+        orderName.add(p.name);
+        database.change(id, p);
+        orderId.remove(id);
+        orderId.add(id);
         adapter.notifyDataSetChanged();
     }
 
-    public void deleteElement(String str) {
-        if(productsName.contains(str)) {
-            productsName.remove(str);
-            database.remove(str);
-            adapter.notifyDataSetChanged();
-        }
+    public void deleteElement(Integer id) {
+        String name = orderName.get(orderId.indexOf(id));
+        orderName.remove(name);
+        orderId.remove(id);
+        database.remove(id);
+        adapter.notifyDataSetChanged();
     }
 }

@@ -59,14 +59,15 @@ public class ProductEditorActivity extends AppCompatActivity {
         }
     }
 
-    public void sendMessage(String message){
+    public void sendDeleteMessage(){
         Intent data = new Intent();
-        data.putExtra(MainActivity.ACCESS_MESSAGE, message);
+        data.putExtra(MainActivity.ACCESS_MESSAGE, "DELETE");
+        data.putExtra(SELECTED_ITEM, product);
         setResult(RESULT_OK, data);
         finish();
     }
 
-    public void sendProduct(int src, String name, Integer count, String url) {
+    public void sendProduct(String name, Integer count) {
         Intent data = new Intent();
         data.putExtra(ACCESS_MESSAGE, "CREATE");
         data.putExtra(SELECTED_ITEM, new Order(0, name, dateOrder, count));
@@ -74,11 +75,11 @@ public class ProductEditorActivity extends AppCompatActivity {
         finish();
     }
 
-    public void sendProductChange(int src, String oldName, String name, Integer count, String url) {
+    public void sendProductChange(String oldName, String name, Integer count) {
         Intent data = new Intent();
         data.putExtra(ACCESS_MESSAGE, "CHANGE");
         data.putExtra(CHANGE_NAME, oldName);
-        data.putExtra(SELECTED_ITEM, new Order(0, name, dateOrder, count));
+        data.putExtra(SELECTED_ITEM, new Order(product.id, name, dateOrder, count));
         setResult(RESULT_OK, data);
         finish();
     }

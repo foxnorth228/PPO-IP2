@@ -20,34 +20,24 @@ public class ProductEditorFragment extends Fragment {
         super(R.layout.fragment_product_editor);
     }
     String oldName = "";
-    String url = null;
-    int src;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         ProductEditorActivity act = (ProductEditorActivity)getActivity();
         assert act != null;
         Calendar date = act.dateOrder;
-        SimpleDateFormat dateFormat = act.dateFormat;
+        SimpleDateFormat dateFormat = ProductEditorActivity.dateFormat;
 
         TextView dateView = view.findViewById(R.id.date);
         dateView.setText(dateFormat.format(date.getTime()));
-        dateView.setOnClickListener((View v) -> {
-            act.setDate(view);
-        });
+        dateView.setOnClickListener((View v) -> act.setDate(view));
 
         Button b = view.findViewById(R.id.backButton);
         Button delete = view.findViewById(R.id.deleteButton);
         Button apply = view.findViewById(R.id.applyButton);
-        delete.setOnClickListener((View v) -> {
-            ((ProductEditorActivity) requireActivity()).sendMessage("DELETE");
-        });
-        b.setOnClickListener((View v) -> {
-            requireActivity().finish();
-        });
-        apply.setOnClickListener((View v) -> {
-            createElement();
-        });
+        delete.setOnClickListener((View v) -> ((ProductEditorActivity) requireActivity()).sendDeleteMessage());
+        b.setOnClickListener((View v) -> requireActivity().finish());
+        apply.setOnClickListener((View v) -> createElement());
     }
 
     public void changeDate(String date) {
@@ -97,6 +87,6 @@ public class ProductEditorFragment extends Fragment {
         }
         ProductEditorActivity a = (ProductEditorActivity) getActivity();
         assert a != null;
-        a.sendProductChange(src, oldName, name, num, url);
+        a.sendProductChange(oldName, name, num);
     }
 }

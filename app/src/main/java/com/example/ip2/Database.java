@@ -1,52 +1,55 @@
 package com.example.ip2;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Objects;
 
 public class Database {
-    private final HashMap<String, Order> database;
+    private final HashMap<Integer, Order> database;
+    private int nextId;
     public Database(){
+        nextId = 0;
         database = new HashMap<>();
     }
 
-    public void initialize(String[] arr) {
+    public ArrayList<Integer> initialize(String[] arr) {
+        ArrayList<Integer> arrayId = new ArrayList<>();
         for(int i = 0; i < arr.length; ++i) {
-            database.put(arr[i], new Order(0, arr[i], Calendar.getInstance(),i + 1));
+            arrayId.add(nextId);
+            database.put(nextId, new Order(nextId, arr[i], Calendar.getInstance(),i + 1));
+            ++nextId;
         }
+        return arrayId;
     }
-    public Order get(String name) {
-        return database.get(name);
+    public Order get(Integer id) {
+        return database.get(id);
     }
 
-    public void put(Order p) {
+    public Integer put(Order p) {
         if(p == null) {
             throw new NullPointerException("Элемент не может быть null");
         }
-        if(database.containsKey(p.name)) {
-            throw new ArrayStoreException("Данный элемент присутствует в базе");
-        }
-        database.put(p.name, p);
+        database.put(nextId, new Order(nextId, p.name, p.date, p.cost));
+        nextId++;
+        return nextId - 1;
     }
 
-    public void change(String name, Order p) {
-        if(!database.containsKey(name)) {
+    public void change(Integer id, Order p) {
+        if(!database.containsKey(id)) {
             throw new ArrayStoreException("Данный элемент не присутствует в базе");
         }
         if(p == null) {
             throw new NullPointerException("Элемент не может быть null");
         }
-        if(!Objects.equals(name, p.name) && database.containsKey(p.name)) {
-            throw new ArrayStoreException("ошибка данных");
-        }
-        database.remove(name);
-        database.put(p.name, p);
+        database.remove(id);
+        database.put(id, new Order(id, p.name, p.date, p.cost));
     }
 
-    public void remove(String str) {
-        if(database.containsKey(str)) {
-            database.remove(str);
+    public void remove(Integer id) {
+        if(database.containsKey(id)) {
+            database.remove(id);
         } else {
             throw new ArrayStoreException("Данный элемент не присутствует в базе");
         }

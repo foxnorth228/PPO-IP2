@@ -16,15 +16,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class ProductCreatorFragment extends Fragment {
-    String url = null;
-    int visibility = View.VISIBLE;
 
     public ProductCreatorFragment(){
         super(R.layout.fragment_product_creator);
-    }
-
-    public void setBitmap(String s) {
-        url = s;
     }
 
     @Override
@@ -61,11 +55,6 @@ public class ProductCreatorFragment extends Fragment {
         dateView.setText(date);
     }
 
-    private void reset(androidx.fragment.app.FragmentActivity a) {
-        ((TextView) a.findViewById(R.id.c_productNameChange)).setText("");
-        ((TextView) a.findViewById(R.id.c_productCountChange)).setText("");
-    }
-
     public void createElement() {
         EditText nameEdit = requireActivity().findViewById(R.id.c_productNameChange);
         EditText countEdit = requireActivity().findViewById(R.id.c_productCountChange);
@@ -83,7 +72,7 @@ public class ProductCreatorFragment extends Fragment {
         }
         ProductEditorActivity a = (ProductEditorActivity) getActivity();
         assert a != null;
-        a.sendProduct(R.drawable.none, name, num, url);
+        a.sendProduct(name, num);
     }
 
     public void setName(String name) {
