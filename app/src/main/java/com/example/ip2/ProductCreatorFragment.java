@@ -36,18 +36,12 @@ public class ProductCreatorFragment extends Fragment {
 
         TextView dateView = view.findViewById(R.id.c_date);
         dateView.setText(dateFormat.format(date.getTime()));
-        dateView.setOnClickListener((View v) -> {
-            act.setDate(view);
-        });
+        dateView.setOnClickListener((View v) -> act.setDate(view));
 
         Button back = view.findViewById(R.id.c_backButton);
         Button createButton = view.findViewById(R.id.c_createButton);
-        back.setOnClickListener((View v) -> {
-            requireActivity().finish();
-        });
-        createButton.setOnClickListener((View v) -> {
-            createElement();
-        });
+        back.setOnClickListener((View v) -> requireActivity().finish());
+        createButton.setOnClickListener((View v) -> createElement());
     }
 
     public void changeDate(String date) {

@@ -2,22 +2,13 @@ package com.example.ip2;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.io.File;
-import java.util.GregorianCalendar;
-
 public class MainActivity extends AppCompatActivity implements OnFragmentSendDataListener {
-    private String selectedItem;
     static final String ACCESS_MESSAGE="ACCESS_MESSAGE";
     ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -34,7 +25,6 @@ public class MainActivity extends AppCompatActivity implements OnFragmentSendDat
                                 Order p = (Order) extras.getSerializable(ProductEditorActivity.SELECTED_ITEM);
                                 fragment.deleteElement(p.id);
                             }
-                            selectedItem = "";
                             break;
                         case "CREATE":
                             ListViewFragment fragment1 = (ListViewFragment) getSupportFragmentManager()
@@ -44,7 +34,6 @@ public class MainActivity extends AppCompatActivity implements OnFragmentSendDat
                                 Order p = (Order) extras.getSerializable(ProductEditorActivity.SELECTED_ITEM);
                                 fragment1.addElement(p);
                             }
-                            selectedItem = "";
                             break;
                         case "CHANGE":
                             ListViewFragment fragment2 = (ListViewFragment) getSupportFragmentManager()
@@ -54,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements OnFragmentSendDat
                                 Order p = (Order) extras.getSerializable(ProductEditorActivity.SELECTED_ITEM);
                                 fragment2.changeElement(p.id, p);
                             }
-                            selectedItem = "";
                             break;
                     }
                 }
@@ -73,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements OnFragmentSendDat
 
     @Override
     public void onSendData(String s, Order product) {
-        selectedItem = s;
         ProductEditorFragment fragment = (ProductEditorFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.detailFragment);
         if (fragment != null && fragment.isVisible()) {

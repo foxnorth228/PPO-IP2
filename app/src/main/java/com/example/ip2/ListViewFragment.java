@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Objects;
 
 public class ListViewFragment extends Fragment {
     private static boolean viewInit = false;
