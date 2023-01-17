@@ -10,46 +10,19 @@ import android.widget.ImageView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.File;
 import java.util.Objects;
 
-public class ProductEditorActivity extends OpenFileManagerActivity {
+public class ProductEditorActivity extends AppCompatActivity {
+    static final String ACCESS_MESSAGE="ACCESS_MESSAGE";
     public final static String SELECTED_ITEM = "SELECTED_ITEM";
     public final static String FRAGMENT_TYPE = "FRAGMENT_TYPE";
     public final static String CHANGE_NAME = "CHANGE_NAME";
     public final static String CREATE_NAME = "CREATE_NAME";
     Product product;
     String newName;
-    boolean isResultOtherActivity = true;
-    ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if(result.getResultCode() == Activity.RESULT_OK){
-                    Intent intent = result.getData();
-                    assert intent != null;
-                    String accessMessage = intent.getStringExtra(ACCESS_MESSAGE);
-                    File file = new File(accessMessage);
-                    if(file.exists()) {
-                        ImageView i = findViewById(R.id.productImage);
-                        ImageView i2 = findViewById(R.id.c_productImage);
-                        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-                        if (i == null) {
-                            ProductCreatorFragment fragment1 = (ProductCreatorFragment) getSupportFragmentManager()
-                                    .findFragmentById(R.id.detailCreateFragment);
-                            assert fragment1 != null;
-                            fragment1.setBitmap(file.getAbsolutePath());
-                            i2.setImageBitmap(bitmap);
-                        } else if (i2 == null) {
-                            ProductEditorFragment fragment = (ProductEditorFragment) getSupportFragmentManager()
-                                    .findFragmentById(R.id.detailFragment);
-                            assert fragment != null;
-                            fragment.setBitmap(file.getAbsolutePath());
-                            i.setImageBitmap(bitmap);
-                        }
-                        isResultOtherActivity = false;
-                    }
-                }
-            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,11 +55,7 @@ public class ProductEditorActivity extends OpenFileManagerActivity {
             fragment1.setName(newName);
         }
         if(fragment != null) {
-            if(isResultOtherActivity) {
-                fragment.setProduct(product);
-            } else {
-                isResultOtherActivity = true;
-            }
+            fragment.setProduct(product);
         }
     }
 
@@ -112,9 +81,5 @@ public class ProductEditorActivity extends OpenFileManagerActivity {
         data.putExtra(SELECTED_ITEM, new Product(src, url, name, count));
         setResult(RESULT_OK, data);
         finish();
-    }
-
-    public void startFileManager() {
-        super.startFileManager(mStartForResult);
     }
 }

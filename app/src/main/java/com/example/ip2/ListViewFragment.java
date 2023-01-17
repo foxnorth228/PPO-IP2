@@ -65,17 +65,9 @@ public class ListViewFragment extends Fragment {
                             editText.getWindowToken(),
                             InputMethodManager.HIDE_NOT_ALWAYS);
 
-                    if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                        MainActivity main = (MainActivity) getActivity();
-                        assert main != null;
-                        main.changeVisibility(true);
-                        EditText e = main.findViewById(R.id.c_productNameChange);
-                        e.setText(name);
-                    } else {
-                        MainActivity m = (MainActivity) getActivity();
-                        assert m != null;
-                        m.createElementActivity(name);
-                    }
+                    MainActivity m = (MainActivity) getActivity();
+                    assert m != null;
+                    m.createElementActivity(name);
                     return true;
                 }
             return false;
@@ -83,7 +75,6 @@ public class ListViewFragment extends Fragment {
         listView.setOnItemClickListener((parent, item, pos, id) -> {
             MainActivity main = (MainActivity) getActivity();
             assert main != null;
-            main.changeVisibility(false);
             fragmentSendDataListener.onSendData(productsName.get(pos), database.get(productsName.get(pos)));
         });
     }

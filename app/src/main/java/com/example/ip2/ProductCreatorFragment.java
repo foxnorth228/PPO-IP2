@@ -36,33 +36,12 @@ public class ProductCreatorFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         Button back = view.findViewById(R.id.c_backButton);
         Button createButton = view.findViewById(R.id.c_createButton);
-        ImageView image = view.findViewById(R.id.c_productImage);
-        image.setOnClickListener((View v) -> {
-            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                ((MainActivity) requireActivity()).startFileManager();
-            } else {
-                ((ProductEditorActivity) requireActivity()).startFileManager();
-            }
-        });
         back.setOnClickListener((View v) -> {
-            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                reset(requireActivity());
-            } else {
-                requireActivity().finish();
-            }
+            requireActivity().finish();
         });
         createButton.setOnClickListener((View v) -> {
             createElement();
         });
-    }
-
-    public void changeVisibility(int change) {
-        if(change != -1) {
-            visibility = change;
-        } else {
-            visibility = (visibility == View.VISIBLE) ? View.INVISIBLE : View.VISIBLE;
-        }
-        requireView().setVisibility(visibility);
     }
 
     private void reset(androidx.fragment.app.FragmentActivity a) {
@@ -86,16 +65,9 @@ public class ProductCreatorFragment extends Fragment {
         catch (Exception e){
             return;
         }
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            MainActivity a = (MainActivity) getActivity();
-            assert a != null;
-            a.createElement(R.drawable.none, name, num, url);
-            reset(getActivity());
-        } else {
-            ProductEditorActivity a = (ProductEditorActivity) getActivity();
-            assert a != null;
-            a.sendProduct(R.drawable.none, name, num, url);
-        }
+        ProductEditorActivity a = (ProductEditorActivity) getActivity();
+        assert a != null;
+        a.sendProduct(R.drawable.none, name, num, url);
     }
 
     public void setName(String name) {
