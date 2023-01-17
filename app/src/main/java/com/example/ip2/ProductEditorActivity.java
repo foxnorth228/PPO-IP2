@@ -1,18 +1,16 @@
 package com.example.ip2;
 
-import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.widget.ImageView;
+import android.view.View;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Objects;
 
 public class ProductEditorActivity extends AppCompatActivity {
@@ -21,8 +19,10 @@ public class ProductEditorActivity extends AppCompatActivity {
     public final static String FRAGMENT_TYPE = "FRAGMENT_TYPE";
     public final static String CHANGE_NAME = "CHANGE_NAME";
     public final static String CREATE_NAME = "CREATE_NAME";
-    Product product;
+    Order product;
     String newName;
+    public Calendar dateOrder = Calendar.getInstance();
+    public static SimpleDateFormat dateFormat = new SimpleDateFormat("dd MM yyyy");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +40,7 @@ public class ProductEditorActivity extends AppCompatActivity {
         } else {
             setContentView(R.layout.activity_detail);
             Bundle extras = getIntent().getExtras();
-            product = (Product) extras.getSerializable(SELECTED_ITEM);
+            product = (Order) extras.getSerializable(SELECTED_ITEM);
         }
     }
 
@@ -69,7 +69,7 @@ public class ProductEditorActivity extends AppCompatActivity {
     public void sendProduct(int src, String name, Integer count, String url) {
         Intent data = new Intent();
         data.putExtra(ACCESS_MESSAGE, "CREATE");
-        data.putExtra(SELECTED_ITEM, new Product(src, url, name, count));
+        data.putExtra(SELECTED_ITEM, new Order(0, name, dateOrder, count));
         setResult(RESULT_OK, data);
         finish();
     }
@@ -78,8 +78,33 @@ public class ProductEditorActivity extends AppCompatActivity {
         Intent data = new Intent();
         data.putExtra(ACCESS_MESSAGE, "CHANGE");
         data.putExtra(CHANGE_NAME, oldName);
-        data.putExtra(SELECTED_ITEM, new Product(src, url, name, count));
+        data.putExtra(SELECTED_ITEM, new Order(0, name, dateOrder, count));
         setResult(RESULT_OK, data);
         finish();
     }
+
+    public void setDate(View v) {
+        new DatePickerDialog(ProductEditorActivity.this, d,
+                dateOrder.get(Calendar.YEAR),
+                dateOrder.get(Calendar.MONTH),
+                dateOrder.get(Calendar.DAY_OF_MONTH))
+                .show();
+    }
+
+    DatePickerDialog.OnDateSetListener d= (view, year, monthOfYear, dayOfMonth) -> {
+        ProductEditorFragment fragment = (ProductEditorFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.detailFragment);
+        ProductCreatorFragment fragment1 = (ProductCreatorFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.detailCreateFragment);
+
+        dateOrder.set(Calendar.YEAR, year);
+        dateOrder.set(Calendar.MONTH, monthOfYear);
+        dateOrder.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+        if(fragment1 != null) {
+            fragment1.changeDate(dateFormat.format(dateOrder.getTime()));
+        } else if (fragment != null) {
+            fragment.changeDate(dateFormat.format(dateOrder.getTime()));
+        }
+    };
 }

@@ -1,20 +1,19 @@
 package com.example.ip2;
 
-import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class ProductEditorFragment extends Fragment {
     public ProductEditorFragment(){
@@ -23,14 +22,20 @@ public class ProductEditorFragment extends Fragment {
     String oldName = "";
     String url = null;
     int src;
-    int visibility = View.INVISIBLE;
-
-    public void setBitmap(String s) {
-        url = s;
-    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        ProductEditorActivity act = (ProductEditorActivity)getActivity();
+        assert act != null;
+        Calendar date = act.dateOrder;
+        SimpleDateFormat dateFormat = act.dateFormat;
+
+        TextView dateView = view.findViewById(R.id.date);
+        dateView.setText(dateFormat.format(date.getTime()));
+        dateView.setOnClickListener((View v) -> {
+            act.setDate(view);
+        });
+
         Button b = view.findViewById(R.id.backButton);
         Button delete = view.findViewById(R.id.deleteButton);
         Button apply = view.findViewById(R.id.applyButton);
@@ -45,6 +50,11 @@ public class ProductEditorFragment extends Fragment {
         });
     }
 
+    public void changeDate(String date) {
+        TextView dateView = requireView().findViewById(R.id.date);
+        dateView.setText(date);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -52,27 +62,20 @@ public class ProductEditorFragment extends Fragment {
     }
 
     private void reset(androidx.fragment.app.FragmentActivity a) {
-        ((ImageView) a.findViewById(R.id.productImage)).setImageResource(R.drawable.none);
         ((TextView) a.findViewById(R.id.productNameChange)).setText("");
         ((TextView) a.findViewById(R.id.productCountChange)).setText("");
     }
 
-    public void setProduct(Product p) {
+    public void setProduct(Order p) {
         if(p == null) {
             reset(requireActivity());
             return;
         }
-        url = p.bitmapUrl;
-        src = p.imageSrc;
         if(getActivity() != null) {
-            if(p.bitmapUrl == null || p.bitmapUrl.equals("")) {
-                ((ImageView) getActivity().findViewById(R.id.productImage)).setImageResource(p.imageSrc);
-            } else {
-                Bitmap bit = BitmapFactory.decodeFile(p.bitmapUrl);
-                ((ImageView) getActivity().findViewById(R.id.productImage)).setImageBitmap(bit);
-            }
+            SimpleDateFormat df = ProductEditorActivity.dateFormat;
             oldName = p.name;
             ((TextView) getActivity().findViewById(R.id.productNameChange)).setText(p.name);
+            ((TextView) getActivity().findViewById(R.id.date)).setText(df.format(p.date.getTime()));
             ((TextView) getActivity().findViewById(R.id.productCountChange)).setText((p.cost.toString()));
         }
     }

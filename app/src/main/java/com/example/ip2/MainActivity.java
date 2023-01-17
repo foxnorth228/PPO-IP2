@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.File;
+import java.util.GregorianCalendar;
 
 public class MainActivity extends AppCompatActivity implements OnFragmentSendDataListener {
     private String selectedItem;
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentSendDat
                                     .findFragmentById(R.id.fragment_container_view);
                             if (fragment1 != null) {
                                 Bundle extras = intent.getExtras();
-                                Product p = (Product) extras.getSerializable(ProductEditorActivity.SELECTED_ITEM);
+                                Order p = (Order) extras.getSerializable(ProductEditorActivity.SELECTED_ITEM);
                                 fragment1.addElement(p);
                             }
                             selectedItem = "";
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentSendDat
                             if (fragment2 != null) {
                                 Bundle extras = intent.getExtras();
                                 String oldName = intent.getStringExtra(ProductEditorActivity.CHANGE_NAME);
-                                Product p = (Product) extras.getSerializable(ProductEditorActivity.SELECTED_ITEM);
+                                Order p = (Order) extras.getSerializable(ProductEditorActivity.SELECTED_ITEM);
                                 fragment2.changeElement(oldName, p);
                             }
                             selectedItem = "";
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentSendDat
     }
 
     @Override
-    public void onSendData(String s, Product product) {
+    public void onSendData(String s, Order product) {
         selectedItem = s;
         ProductEditorFragment fragment = (ProductEditorFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.detailFragment);
@@ -89,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentSendDat
         ListViewFragment fragment1 = (ListViewFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fragment_container_view);
         assert fragment1 != null;
-        fragment1.addElement(new Product(src, url, name, count));
+        fragment1.addElement(new Order(0, name, new GregorianCalendar(), count));
         selectedItem = "";
     }
 
@@ -97,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentSendDat
         ListViewFragment fragment2 = (ListViewFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fragment_container_view);
         assert fragment2 != null;
-        fragment2.changeElement(oldName, new Product(src, url, name, count));
+        fragment2.changeElement(oldName, new Order(0, name, new GregorianCalendar(), count));
         selectedItem = "";
     }
 

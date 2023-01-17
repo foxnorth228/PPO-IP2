@@ -1,24 +1,26 @@
 package com.example.ip2;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Objects;
 
 public class Database {
-    private final HashMap<String, Product> database;
+    private final HashMap<String, Order> database;
     public Database(){
         database = new HashMap<>();
     }
 
     public void initialize(String[] arr) {
         for(int i = 0; i < arr.length; ++i) {
-            database.put(arr[i], new Product(R.drawable.bread, arr[i], i + 1));
+            database.put(arr[i], new Order(0, arr[i], Calendar.getInstance(),i + 1));
         }
     }
-    public Product get(String name) {
+    public Order get(String name) {
         return database.get(name);
     }
 
-    public void put(Product p) {
+    public void put(Order p) {
         if(p == null) {
             throw new NullPointerException("Элемент не может быть null");
         }
@@ -28,7 +30,7 @@ public class Database {
         database.put(p.name, p);
     }
 
-    public void change(String name, Product p) {
+    public void change(String name, Order p) {
         if(!database.containsKey(name)) {
             throw new ArrayStoreException("Данный элемент не присутствует в базе");
         }

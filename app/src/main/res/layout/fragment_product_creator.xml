@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/editor_fragment"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -17,38 +17,29 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/c_productImage"
-        android:layout_width="194dp"
-        android:layout_height="178dp"
-        android:layout_marginStart="84dp"
-        android:layout_marginTop="32dp"
-        app:layout_constraintLeft_toLeftOf="@id/c_backButton"
-        app:layout_constraintTop_toBottomOf="@id/c_backButton"
-        app:srcCompat="@android:drawable/presence_away"
-        android:contentDescription="@string/productImage" />
-
     <TextView
         android:id="@+id/c_productName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
         android:text="@string/productName"
-        app:layout_constraintLeft_toLeftOf="@id/c_productImage"
-        app:layout_constraintTop_toBottomOf="@id/c_productImage" />
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="60dp"
+        app:layout_constraintLeft_toLeftOf="@id/c_backButton"
+        app:layout_constraintTop_toBottomOf="@id/c_backButton" />
 
     <EditText
         android:id="@+id/c_productNameChange"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:autofillHints="name"
-        android:imeOptions="actionDone"
         android:hint="@string/enterName"
+        android:imeOptions="actionDone"
         android:inputType="text"
-        android:layout_marginTop="65dp"
         android:minHeight="48dp"
-        app:layout_constraintRight_toRightOf="@id/c_productImage"
-        app:layout_constraintTop_toBottomOf="@id/c_productImage" />
+        android:layout_marginStart="96dp"
+        android:layout_marginTop="46dp"
+        app:layout_constraintLeft_toRightOf="@id/c_backButton"
+        app:layout_constraintTop_toBottomOf="@id/c_backButton" />
 
     <TextView
         android:id="@+id/c_productCount"
@@ -72,6 +63,16 @@
         app:layout_constraintLeft_toLeftOf="@id/c_productNameChange"
         app:layout_constraintRight_toRightOf="@id/c_productNameChange"
         app:layout_constraintTop_toBottomOf="@id/c_productNameChange" />
+
+    <TextView
+        android:id="@+id/c_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="240dp"
+        android:text="@string/productCount"
+        app:layout_constraintLeft_toLeftOf="@id/c_backButton"
+        app:layout_constraintRight_toRightOf="@id/c_createButton"
+        app:layout_constraintTop_toBottomOf="@id/c_backButton" />
 
     <Button
         android:id="@+id/c_createButton"

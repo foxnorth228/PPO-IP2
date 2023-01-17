@@ -79,7 +79,7 @@ public class ListViewFragment extends Fragment {
         });
     }
 
-    public void addElement(Product p) {
+    public void addElement(Order p) {
         if(productsName.contains(p.name)) {
             return;
         }
@@ -88,7 +88,7 @@ public class ListViewFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
-    public void changeElement(String name, Product p) {
+    public void changeElement(String name, Order p) {
         if(!productsName.contains(name)) {
             return;
         }
