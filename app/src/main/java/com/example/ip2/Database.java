@@ -3,7 +3,6 @@ package com.example.ip2;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import java.text.ParsePosition;
 import java.util.ArrayList;
@@ -62,7 +61,6 @@ public class Database {
         cv.put(SQLDatabase.date, date);
         cv.put(SQLDatabase.cost, p.cost);
         int id = (int) db.insert(SQLDatabase.table, null, cv);
-        Log.d("SQL", "Putted");
         return id;
     }
 
